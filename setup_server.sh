@@ -1,5 +1,9 @@
+# https://raw.githubusercontent.com/tigelane/spring-petclinic/master/setup_server.sh
 sudo yum -y update
 sudo yum install -y git
+
+echo $IGNW_InstallURL > script.log
+echo $IGNW_1 >> script.log
 
 cd /opt
 sudo wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz"
