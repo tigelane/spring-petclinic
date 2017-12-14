@@ -22,5 +22,5 @@ cd /opt
 git clone https://github.com/tigelane/spring-petclinic.git
 cd spring-petclinic
 sudo ./mvnw spring-boot:run > pet.log 2>&1 &
-sleep 180
+sleep 10
 ls
