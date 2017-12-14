@@ -1,4 +1,8 @@
-# Spring PetClinic Sample Application [![Build Status](https://travis-ci.org/spring-projects/spring-petclinic.png?branch=master)](https://travis-ci.org/spring-projects/spring-petclinic/)
+# Spring PetClinic Sample Application
+
+## Quick Start
+* Run `setup_server.sh` on the server to isntall everything needed.
+* You can then access petclinic here: [http://localhost:8080/]()
 
 ## Understanding the Spring Petclinic application with a few diagrams
 <a href="https://speakerdeck.com/michaelisvy/spring-petclinic-sample-application">See the presentation here</a>
