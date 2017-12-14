@@ -15,4 +15,6 @@ sudo alternatives --set javac /opt/jdk1.8.0_151/bin/javac
 cd
 git clone https://github.com/tigelane/spring-petclinic.git
 cd spring-petclinic
-sudo ./mvnw spring-boot:run
+sudo ./mvnw spring-boot:run > pet.log 2>&1 &
+sleep 180
+ls
