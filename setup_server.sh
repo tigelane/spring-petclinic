@@ -12,7 +12,7 @@ sudo alternatives --install /usr/bin/javac javac /opt/jdk1.8.0_151/bin/javac 2
 sudo alternatives --set jar /opt/jdk1.8.0_151/bin/jar
 sudo alternatives --set javac /opt/jdk1.8.0_151/bin/javac
 
-cd
+cd /opt
 git clone https://github.com/tigelane/spring-petclinic.git
 cd spring-petclinic
 sudo ./mvnw spring-boot:run > pet.log 2>&1 &
