@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # https://raw.githubusercontent.com/tigelane/spring-petclinic/master/setup_server.sh
 sudo yum -y update
