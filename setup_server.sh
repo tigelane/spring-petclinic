@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # https://raw.githubusercontent.com/tigelane/spring-petclinic/master/setup_server.sh
 sudo yum -y update
 sudo yum install -y git
