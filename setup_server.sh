@@ -5,8 +5,7 @@ sudo yum -y update
 sudo yum install -y git
 
 sudo echo $IGNW_InstallURL > script.log
-sudo echo $IGNW_1 >> script.log
-sudo printenv >> script.log
+sudo echo $Master_ipaddress >> script.log
 
 cd /opt
 sudo wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz"
