@@ -3,7 +3,7 @@
 # https://raw.githubusercontent.com/tigelane/spring-petclinic/master/setup_server.sh
 source envv.sh
 echo "--Executing from $IGNW_INSTALLURL --" > install.log
-IGNW_BRANCH="${IGNW_BRANCH:master}"
+IGNW_BRANCH="${IGNW_BRANCH:-master}"
 
 echo "--Updating yum--" >> install.log
 sudo yum -y update
