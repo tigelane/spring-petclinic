@@ -3,6 +3,7 @@
 # https://raw.githubusercontent.com/tigelane/spring-petclinic/master/setup_server.sh
 source envv.sh
 echo "--Executing from $IGNW_INSTALLURL --" > setup.log
+CODEBRANCH="${IGNW_BRANCH:master}"
 
 echo "--Updating yum--" > setup.log
 sudo yum -y update
@@ -22,7 +23,7 @@ sudo alternatives --set jar /opt/jdk1.8.0_151/bin/jar
 sudo alternatives --set javac /opt/jdk1.8.0_151/bin/javac
 
 cd ~/
-git clone https://github.com/tigelane/spring-petclinic.git
+git clone -b $CODEBRANCH https://github.com/tigelane/spring-petclinic.git
 cd spring-petclinic
 sudo nohup ./mvnw spring-boot:run 2>&1 &
 sleep 30
