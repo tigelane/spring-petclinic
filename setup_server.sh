@@ -22,7 +22,7 @@ sudo alternatives --install /usr/bin/javac javac /opt/jdk1.8.0_151/bin/javac 2
 sudo alternatives --set jar /opt/jdk1.8.0_151/bin/jar
 sudo alternatives --set javac /opt/jdk1.8.0_151/bin/javac
 
-cd /home/ec2-user
+cd
 echo "--Installing Pet Clinic - Branch: $IGNW_BRANCH--" >> install.log
 git clone -b $IGNW_BRANCH https://github.com/tigelane/spring-petclinic.git
 cd spring-petclinic
