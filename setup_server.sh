@@ -27,4 +27,4 @@ echo "--Installing Pet Clinic - Branch: $IGNW_BRANCH--" >> install.log
 git clone -b $IGNW_BRANCH https://github.com/tigelane/spring-petclinic.git
 cd spring-petclinic
 sudo nohup ./mvnw spring-boot:run 2>&1 &
-sleep 30
+sleep 5
