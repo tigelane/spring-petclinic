@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from datetime import datetime
 import sys, requests, re, random, os
 import json, time
@@ -17,46 +15,6 @@ dataUrl = None
 
 processID = None
 
-def main(argv):
-    global processID
-    badCommand = False
-
-    if len(argv) > 4:
-        appName = argv[2]
-        appVar = argv[3]
-        cloud = argv[4]
-        if argv[1] == "create_pet":
-            create_pet(appName, appVar, cloud)
-            exit(0)
-        elif argv[1] == "create_swarm":
-            create_swarm(appName, appVar, cloud)
-            exit(0)
-        else:
-            badCommand = True
-
-    if len(argv) > 2:
-        processID = argv[2]
-        if argv[1] == "delete":
-            delete(argv[2])
-            exit(0)
-        else:
-            badCommand = True
-
-    if len(argv) > 1:
-        if argv[1] == "blueprints_list":
-            exit (blueprints_list())
-        if argv[1] == "apps_list":
-            sys.exit(apps_list())
-        else:
-            badCommand = True
-    else:
-        badCommand = True
-
-    if badCommand:
-        funcReply = "USAGE:  {0} <(job)> <(app name)> <(variable)> <(aws, nutanix)>\nValid jobs: create_pet, create_swarm, delete, blueprints_list, apps_list\nValid variables: ([master, orange, siamese], swarm#)".format(argv[0])
-        print (funcReply)
-        return funcReply
-
 def apps_list():
     dataUrl = '{0}/apps/list'.format(urlBaseV3)
     response = open_url(dataUrl, "post", "{}")
@@ -72,94 +30,6 @@ def apps_list():
         return ("{0}".format(response))
 
     return myList
-
-def get_blueprints():
-    dataUrl = '{0}/blueprints/list'.format(urlBaseV3)
-    response = open_url(dataUrl, "post", "{}")
-    active_blueprints = []
-
-    try:
-        for blueprint in response["entities"]:
-            if blueprint["status"]["state"] == "ACTIVE":
-                name = blueprint["status"]["name"]
-                uuid = blueprint["status"]["uuid"]
-                spec_version = blueprint["status"]["spec_version"]
-                project = blueprint["metadata"]["project_reference"]["name"]
-                active_blueprints.append({"name":name, "uuid":uuid, "spec_version": spec_version, "project_reference": project})
-    except:
-        return ("{}".format(response))
-
-    return active_blueprints
-
-def blueprints_list():
-    funcReply = "\n=====  Active Projects  ====="
-    active_blueprints = get_blueprints()
-
-    for blueprint in active_blueprints:
-        funcReply += "Name: {0}".format(blueprint["name"])
-        funcReply += "UUID: {0}".format(blueprint["uuid"])
-        funcReply += "Spec Version: {0}".format(blueprint["spec_version"])
-        funcReply += "Project: {0}".format(blueprint["project_reference"])
-        funcReply += "=============================\n"
-
-        print (funcReply)
-        return funcReply
-
-def blueprints_single(blueprintName):
-    active_blueprints = get_blueprints()
-
-    for blueprint in active_blueprints:
-        if blueprint["name"] == blueprintName:
-            return blueprint
-
-def create_pet(appName, appVar, cloud):
-    blueprintData = blueprints_single("Pet Clinic")
-
-    if cloud.lower() == "nutanix":
-        body = get_pet_nutanix_body(appName, appVar, blueprintData["spec_version"])
-    elif cloud.lower() == "aws":
-        body = get_pet_aws_body(appName, appVar, blueprintData["spec_version"])
-    elif cloud.lower() == "google":
-        return "{0} cloud is not implemented yet.".format(cloud)
-    else:
-        return "The following is not a valid cloud: {}".format(cloud)
-
-    body = json.dumps(body, ensure_ascii=True)
-
-    dataUrl = '{0}/blueprints/{1}/launch'.format(urlBaseV3, blueprintData["uuid"])
-    response = open_url(dataUrl, "post", body)
-
-    try:
-        myReturn = "Job created with ID: {0}".format(response["status"]["request_id"])
-    except:
-        myReturn = "{}".format(response)
-
-    return myReturn
-
-def create_swarm(appName, appVar, cloud):
-    blueprintData = blueprints_single("IGNW Docker")
-
-    if cloud.lower() == "nutanix":
-        body = get_swarm_nutanix_body(appName, appVar, blueprintData["spec_version"])
-    elif cloud.lower() == "aws":
-        return "{0} cloud is not implemented yet.".format(cloud)
-    elif cloud.lower() == "google":
-        return "{0} cloud is not implemented yet.".format(cloud)
-    else:
-        return "The following is not a valid cloud: {}".format(cloud)
-
-    body = json.dumps(body, ensure_ascii=True)
-
-    dataUrl = '{0}/blueprints/{1}/launch'.format(urlBaseV3, blueprintData["uuid"])
-    response = open_url(dataUrl, "post", body)
-
-    try:
-        myReturn = "Job created with ID: {0}".format(response["status"]["request_id"])
-    except:
-        myReturn = "{}".format(response)
-
-    return myReturn
-
 def get_app(appName):
     dataUrl = '{0}/apps/list'.format(urlBaseV3)
     response = open_url(dataUrl, "post", "{}")
@@ -174,7 +44,6 @@ def get_app(appName):
 
     # return empty string if appName is not found
     return ""
-
 def delete(appName):
     uuid = ""
     uuid = get_app(appName)
@@ -194,7 +63,6 @@ def delete(appName):
     except:
         #print ("{}".format(response))
         return 1
-
 def open_url(url, method, body=None):
     headers={'Content-Type': 'application/json'}
     auth=(sysUser, sysPass)
@@ -234,7 +102,88 @@ def open_url(url, method, body=None):
 
     else:
         return {"resource" : "Unknown error code: {0} - With this error text: {1}".format(result.status_code, result.text)}
+def get_blueprints():
+    dataUrl = '{0}/blueprints/list'.format(urlBaseV3)
+    response = open_url(dataUrl, "post", "{}")
+    active_blueprints = []
 
+    try:
+        for blueprint in response["entities"]:
+            if blueprint["status"]["state"] == "ACTIVE":
+                name = blueprint["status"]["name"]
+                uuid = blueprint["status"]["uuid"]
+                spec_version = blueprint["status"]["spec_version"]
+                project = blueprint["metadata"]["project_reference"]["name"]
+                active_blueprints.append({"name":name, "uuid":uuid, "spec_version": spec_version, "project_reference": project})
+    except:
+        return ("{}".format(response))
+
+    return active_blueprints
+def blueprints_list():
+    funcReply = "\n=====  Active Projects  ====="
+    active_blueprints = get_blueprints()
+
+    for blueprint in active_blueprints:
+        funcReply += "Name: {0}".format(blueprint["name"])
+        funcReply += "UUID: {0}".format(blueprint["uuid"])
+        funcReply += "Spec Version: {0}".format(blueprint["spec_version"])
+        funcReply += "Project: {0}".format(blueprint["project_reference"])
+        funcReply += "=============================\n"
+
+        print (funcReply)
+        return funcReply
+def blueprints_single(blueprintName):
+    active_blueprints = get_blueprints()
+
+    for blueprint in active_blueprints:
+        if blueprint["name"] == blueprintName:
+            return blueprint
+def create_pet(appName, appVar, cloud):
+    blueprintData = blueprints_single("Pet Clinic")
+
+    if cloud.lower() == "nutanix":
+        body = get_pet_nutanix_body(appName, appVar, blueprintData["spec_version"])
+    elif cloud.lower() == "aws":
+        body = get_pet_aws_body(appName, appVar, blueprintData["spec_version"])
+    elif cloud.lower() == "google":
+        return "{0} cloud is not implemented yet.".format(cloud)
+    else:
+        return "The following is not a valid cloud: {}".format(cloud)
+
+    body = json.dumps(body, ensure_ascii=True)
+
+    dataUrl = '{0}/blueprints/{1}/launch'.format(urlBaseV3, blueprintData["uuid"])
+    response = open_url(dataUrl, "post", body)
+
+    try:
+        myReturn = "Job created with ID: {0}".format(response["status"]["request_id"])
+    except:
+        myReturn = "{}".format(response)
+
+    return myReturn
+def create_swarm(appName, appVar, cloud):
+    blueprintData = blueprints_single("IGNW Docker")
+
+    if cloud.lower() == "nutanix":
+        body = get_swarm_nutanix_body(appName, appVar, blueprintData["spec_version"])
+    elif cloud.lower() == "aws":
+        return "{0} cloud is not implemented yet.".format(cloud)
+    elif cloud.lower() == "google":
+        return "{0} cloud is not implemented yet.".format(cloud)
+    else:
+        return "The following is not a valid cloud: {}".format(cloud)
+
+    body = json.dumps(body, ensure_ascii=True)
+
+    dataUrl = '{0}/blueprints/{1}/launch'.format(urlBaseV3, blueprintData["uuid"])
+    response = open_url(dataUrl, "post", body)
+
+    try:
+        myReturn = "Job created with ID: {0}".format(response["status"]["request_id"])
+    except:
+        myReturn = "{}".format(response)
+
+    return myReturn
 def get_pet_aws_body(newName, appVar, spec_version):
     body = {
         "api_version": "3.0",
@@ -921,7 +870,6 @@ def get_pet_aws_body(newName, appVar, spec_version):
     }
 
     return body
-
 def get_pet_nutanix_body(newName, appVar, spec_version):
     body = {
         "api_version": "3.0",
@@ -1608,12 +1556,10 @@ def get_pet_nutanix_body(newName, appVar, spec_version):
     }
 
     return body
-
 def get_swarm_aws_body(newName, appVar, spec_version):
     body = {}
 
     return body
-
 def get_swarm_nutanix_body(newName, appVar, spec_version):
     body = {
         "api_version": "3.0",
@@ -2470,10 +2416,3 @@ def get_swarm_nutanix_body(newName, appVar, spec_version):
 
 
     return body
-
-
-if __name__ == '__main__':
-    try:
-        main(sys.argv)
-    except KeyboardInterrupt:
-        pass

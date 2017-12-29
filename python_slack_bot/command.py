@@ -1,10 +1,10 @@
 import subprocess
-import calm_execute
+import calm_execute as calm
 
 class Command(object):
     def __init__(self):
         self.commands = {
-            "apps" : self.apps_list,
+            "apps" : self.apps,
             "build" : self.build,
             "delete" :self.delete,
             "help" : self.help
@@ -21,8 +21,8 @@ class Command(object):
 
         return response
 
-    def apps_list(self, command):
-        response = calm_execute.apps_list()
+    def apps(self, command):
+        response = calm.apps_list()
         myReturn = ""
 
         if len(response) > 0:
@@ -46,10 +46,10 @@ class Command(object):
             return "Sorry, not enough arguments."
 
         if command[1] == "pet":
-            response = calm_execute.create_pet(appName, appVar, cloud)
+            response = calm.create_pet(appName, appVar, cloud)
 
         elif command[1] == "swarm":
-            response = calm_execute.create_swarm(appName, appVar, cloud)
+            response = calm.create_swarm(appName, appVar, cloud)
 
         else:
             return "I'm sorry.  That's an unknown application."
@@ -65,7 +65,7 @@ class Command(object):
         if len(command) < 2:
             return "{} requrires an app name.".format(command[0])
 
-        response = calm_execute.delete(command[1])
+        response = calm.delete(command[1])
 
         if len(response) > 0:
             myReturn = response
@@ -74,7 +74,7 @@ class Command(object):
 
         return myReturn
 
-    def help(self):
+    def help(self, command):
         response = "I support the following commands:\r\n"
 
         for command in self.commands:
